@@ -1,0 +1,29 @@
+{
+  "name": "cognifyz-intern",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dibyaranajnsahoo1/Cognifyz-intern.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dibyaranajnsahoo1/Cognifyz-intern/issues"
+  },
+  "homepage": "https://github.com/dibyaranajnsahoo1/Cognifyz-intern#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.3",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "mongoose": "^8.12.1"
+  },
+  "description": ""
+}
