@@ -1,9 +1,13 @@
-document.querySelector("form").addEventListener("submit", function(event) {
-    let username = document.querySelector("[name='username']").value;
-    let password = document.querySelector("[name='password']").value;
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('✨ App Loaded!');
 
-    if (username.trim() === "" || password.trim() === "") {
-        alert("All fields are required!");
-        event.preventDefault();
+    // Logout Confirmation
+    const logoutBtn = document.querySelector('a[href="/logout"]');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+            if (!confirm("Are you sure you want to log out?")) {
+                e.preventDefault();
+            }
+        });
     }
 });

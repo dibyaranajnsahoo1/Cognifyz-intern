@@ -1,25 +1,62 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const session = require('express-session');
-const bodyParser = require('body-parser');
-const authRoutes = require('./routes/auth');
-const userRoutes = require('./routes/users');
+const router = express.Router();
+const User = require('../models/User');
+const bcrypt = require('bcrypt');
 
-const app = express();
-const PORT = 3000;
+// ✅ Show Register Page
+router.get('/register', (req, res) => {
+    res.render('register');
+});
 
-// MongoDB Connection
-mongoose.connect('mongodb://localhost:27017/userDB', { useNewUrlParser: true, useUnifiedTopology: true });
+// ✅ Show Login Page
+router.get('/login', (req, res) => {
+    res.render('login');
+});
 
-// Middleware
-app.set('view engine', 'ejs');
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static('public'));
-app.use(session({ secret: 'secretkey', resave: false, saveUninitialized: true }));
+// ✅ Show Dashboard (Only if logged in)
+router.get('/dashboard', (req, res) => {
+    if (!req.session.user) {
+        return res.redirect('/login');
+    }
+    res.render('dashboard', { user: req.session.user });
+});
 
-// Routes
-app.use('/', authRoutes);
-app.use('/api', userRoutes);
+// ✅ Handle Registration
+router.post('/register', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newUser = new User({ username, password: hashedPassword });
+        await newUser.save();
+        res.redirect('/login');
+    } catch (err) {
+        res.status(500).send('Error registering user');
+    }
+});
 
-// Server Start
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+// ✅ Handle Login
+router.post('/login', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const user = await User.findOne({ username });
+        if (!user) return res.status(400).send('User not found');
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) return res.status(401).send('Invalid credentials');
+
+        req.session.user = user;
+        res.redirect('/dashboard');
+    } catch (err) {
+        res.status(500).send('Error logging in');
+    }
+});
+
+// ✅ Logout
+router.get('/logout', (req, res) => {
+    req.session.destroy(err => {
+        if (err) return res.status(500).send('Logout failed');
+        res.redirect('/login');
+    });
+});
+
+module.exports = router;
