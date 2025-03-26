@@ -3,17 +3,16 @@ const router = express.Router();
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 
-// ✅ Show Register Page
 router.get('/register', (req, res) => {
     res.render('register');
 });
 
-// ✅ Show Login Page
+
 router.get('/login', (req, res) => {
     res.render('login');
 });
 
-// ✅ Show Dashboard (Only if logged in)
+
 router.get('/dashboard', (req, res) => {
     if (!req.session.user) {
         return res.redirect('/login');
@@ -21,7 +20,7 @@ router.get('/dashboard', (req, res) => {
     res.render('dashboard', { user: req.session.user });
 });
 
-// ✅ Handle Registration
+
 router.post('/register', async (req, res) => {
     try {
         const { username, password } = req.body;
@@ -34,7 +33,7 @@ router.post('/register', async (req, res) => {
     }
 });
 
-// ✅ Handle Login
+
 router.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;
@@ -51,7 +50,7 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// ✅ Logout
+
 router.get('/logout', (req, res) => {
     req.session.destroy(err => {
         if (err) return res.status(500).send('Logout failed');
